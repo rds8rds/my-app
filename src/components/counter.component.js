@@ -2,37 +2,53 @@ import React, { Component } from "react";
 
 class Counter extends Component {
   state = {
-    count: 0,
+    count: 5,
   };
 
-  handleIncrement = (event) => {
-    //this.state.count = this.state.count + 1; state wont change in this way
+  handleDecrement = () => {
+    if (this.state.count > 0) this.setState({ count: this.state.count - 1 });
+  };
+
+  handleIncrement = () => {
     this.setState({ count: this.state.count + 1 });
   };
 
-  handleDecrement = (event) => {
-    // this.setState((prevState) => ({
-    //   // here argument is prevState which is a default parameter of state
-    //   count: prevState.count === 0 ? 0 : prevState.count - 1,
-    // }));
-    // let's do it in a easy way;
+  disableDecresebutton = () => {
+    return this.state.count === 0;
+  };
 
-    if (this.state.count > 0) this.setState({ count: this.state.count - 1 });
+  handleRemove = () => {
+    if (this.props.onRemove) {
+      this.props.onRemove();
+    }
   };
 
   render() {
     return (
-      <>
-        <h2>Hello World</h2>
-        <button onClick={this.handleIncrement}>Increment</button>
-        <span style={{ marginLeft: "5px" }}>{this.state.count}</span>
-        <button onClick={this.handleDecrement}>Increment</button>
-      </>
+      <div className="d-flex flex-row">
+        <span className="p-2"> Quantity </span>
+        <button
+          disabled={this.disableDecresebutton()} /* full function passing  */
+          className="p-2 btn btn-primary"
+          onClick={this.handleDecrement}
+        >
+          -
+        </button>
+        <span className="p-2"> {this.state.count} </span>
+        <button className="p-2 btn btn-primary" onClick={this.handleIncrement}>
+          +
+        </button>
+        <button
+          style={{ marginLeft: "5px" }} /* taking spaces */
+          onClick={this.handleRemove}
+          className="btn btn-primary"
+        >
+          {" "}
+          Remove{" "}
+        </button>
+      </div>
     );
   }
 }
 
 export default Counter;
-
-// imrc --> import react componect;
-// cc --> class component;

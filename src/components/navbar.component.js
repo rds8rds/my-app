@@ -5,7 +5,11 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand">Navbar</a>
+        <button onClick={this.props.handleAdd} className="btn btn-primary">
+          {" "}
+          Add{" "}
+        </button>
+        <a className="navbar-brand">Active Cart : {this.props.activeCart}</a>
       </nav>
     );
   }

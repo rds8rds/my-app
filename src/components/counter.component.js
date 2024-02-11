@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class Counter extends Component {
   state = {
-    count: 5,
+    count: 0,
   };
 
   handleDecrement = () => {
@@ -23,6 +23,12 @@ class Counter extends Component {
     }
   };
 
+  handleClick = (param1, param2, flag) => {
+    param1();
+    if (flag && this.state.count == 0) param2();
+    else if (!flag && this.state.count == 1) param2();
+  };
+
   render() {
     return (
       <div className="d-flex flex-row">
@@ -30,12 +36,27 @@ class Counter extends Component {
         <button
           disabled={this.disableDecresebutton()} /* full function passing  */
           className="p-2 btn btn-primary"
-          onClick={this.handleDecrement}
+          onClick={() =>
+            this.handleClick(
+              this.handleDecrement,
+              this.props.activeCartDec,
+              false
+            )
+          }
         >
           -
         </button>
         <span className="p-2"> {this.state.count} </span>
-        <button className="p-2 btn btn-primary" onClick={this.handleIncrement}>
+        <button
+          className="p-2 btn btn-primary"
+          onClick={() =>
+            this.handleClick(
+              this.handleIncrement,
+              this.props.activeCartInc,
+              true
+            )
+          }
+        >
           +
         </button>
         <button

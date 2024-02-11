@@ -6,8 +6,8 @@ import Navbar from "./components/navbar.component";
 
 class App extends Component {
   state = {
-    counters: [1, 2, 3, 4],
-    handleCounters: [1],
+    handleCounters: [1, 2, 3, 4, 5],
+    activeCart: 0,
   };
   handleRemove = () => {
     const counters = [...this.state.handleCounters];
@@ -21,20 +21,36 @@ class App extends Component {
     this.setState({ handleCounters: counters });
   };
 
+  counter = () => {
+    return this.state.handleCounters.length;
+  };
+
+  activeCartInc = () => {
+    const curr = this.state.activeCart;
+    this.setState({ activeCart: curr + 1 });
+    console.log(this.state.activeCart);
+  };
+
+  activeCartDec = () => {
+    const curr = this.state.activeCart;
+    this.setState({ activeCart: curr - 1 });
+    console.log(this.state.activeCart);
+  };
+
   render() {
     return (
       // <> react fragment
       <>
-        <Navbar />
-        <button onClick={this.handleAdd} className="btn btn-primary">
-          {" "}
-          Add{" "}
-        </button>
-
+        <Navbar handleAdd={this.handleAdd} activeCart={this.state.activeCart} />
         {this.state.handleCounters.map((counter, index) => (
           <>
             <br />
-            <Counter onRemove={this.handleRemove} key={index} />
+            <Counter
+              onRemove={this.handleRemove}
+              key={index}
+              activeCartInc={this.activeCartInc}
+              activeCartDec={this.activeCartDec}
+            />
           </>
         ))}
 

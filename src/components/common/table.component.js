@@ -4,7 +4,7 @@ import TableBody from "./table-body.component";
 const Table = ({ headers, data, columns }) => {
   return (
     <>
-      <table class="table table-striped">
+      <table className="table table-striped">
         <TableHeader headers={headers} />
         <TableBody data={data} columns={columns} />
       </table>

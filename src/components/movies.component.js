@@ -1,44 +1,91 @@
 import React, { Component } from "react";
 import Table from "./common/table.component";
+import Rating from "./rating.component";
 
 class Movies extends Component {
   state = {
-    headers: ["ID", "First Name", "Last Name", "Handle"],
+    headers: ["Rank", "Title", "IMDB Rating", "Your Rating", "Action"],
     movies: [
       {
-        id: 1,
-        first_name: "Rudra",
-        last_name: "Sarkar",
-        handle: "@rudras",
+        rank: 1,
+        title: "The Shawshank Redemption",
+        rating: 9.2,
+        c_rating: true,
+        action: "",
       },
       {
-        id: 2,
-        first_name: "Habib",
-        last_name: "Rahman",
-        handle: "@hbahi",
+        rank: 2,
+        title: "The Godfather",
+        rating: 9.1,
+        c_rating: false,
+        action: "",
       },
       {
-        id: 3,
-        first_name: "Neha",
-        last_name: "Sarkar",
-        handle: "@neha",
+        rank: 3,
+        title: "The Godfather: Part 2",
+        rating: 9.0,
+        c_rating: false,
+        action: "",
+      },
+      {
+        rank: 4,
+        title: "The Dark Kinght",
+        rating: 9.0,
+        c_rating: true,
+        action: "",
+      },
+      {
+        rank: 5,
+        title: "12 Angry Men",
+        rating: 8.9,
+        c_rating: true,
+        action: "",
       },
     ],
   };
+
+  handleToggleRating = (movieRank) => {
+    const movies = [...this.state.movies];
+    const movie = movies.find((movie) => movie.rank === movieRank);
+    movie.c_rating = !movie.c_rating;
+    this.setState({ movies });
+  };
+
   render() {
     const columns = [
-      { label: "ID", path: "id", content: (item) => <td>{item}</td> },
       {
-        label: "First Name",
-        path: "first_name",
-        content: (item) => <td>{item}</td>,
+        label: "Rank",
+        path: "rank",
+        content: (movie, key) => <td>{movie[key]}</td>,
       },
       {
-        label: "Last Name",
-        path: "last_name",
-        content: (item) => <td>{item}</td>,
+        label: "Title",
+        path: "title",
+        content: (movie, key) => <td>{movie[key]}</td>,
       },
-      { label: "Handle", path: "handle", content: (item) => <td>{item}</td> },
+      {
+        label: "IMDB Rating",
+        path: "rating",
+        content: (movie, key) => <td>{movie[key]}</td>,
+      },
+      {
+        label: "Your Rating",
+        path: "c_rating",
+        content: (movie, key) => (
+          <td>
+            <Rating
+              isRated={movie[key]}
+              rank={movie.rank}
+              handleToggleRating={this.handleToggleRating}
+            />
+          </td>
+        ),
+      },
+      {
+        label: "Action",
+        path: "action",
+        content: (movie, key) => <td>{movie[key]}</td>,
+      },
     ];
     return (
       <>

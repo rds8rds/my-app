@@ -103,4 +103,5 @@ export default Movies;
 
 /*
  ** columns array টা মুভি table এর কয়টা column আছে সেই info পাস করে
+ ** npm i bootstrap-icons
  */

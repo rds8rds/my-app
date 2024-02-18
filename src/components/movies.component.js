@@ -1,61 +1,33 @@
 import React, { Component } from "react";
 import Table from "./common/table.component";
 import Rating from "./rating.component";
+import getMovies from "../service/get-movies.service";
 
 class Movies extends Component {
   state = {
-    headers: ["Rank", "Title", "IMDB Rating", "Your Rating", "Action"],
-    movies: [
-      {
-        rank: 1,
-        title: "The Shawshank Redemption",
-        rating: 9.2,
-        c_rating: true,
-        action: "",
-      },
-      {
-        rank: 2,
-        title: "The Godfather",
-        rating: 9.1,
-        c_rating: false,
-        action: "",
-      },
-      {
-        rank: 3,
-        title: "The Godfather: Part 2",
-        rating: 9.0,
-        c_rating: false,
-        action: "",
-      },
-      {
-        rank: 4,
-        title: "The Dark Kinght",
-        rating: 9.0,
-        c_rating: true,
-        action: "",
-      },
-      {
-        rank: 5,
-        title: "12 Angry Men",
-        rating: 8.9,
-        c_rating: true,
-        action: "",
-      },
-    ],
+    headers: ["ID", "Title", "IMDB Rating", "Your Rating", "Action"],
+    movies: [],
   };
 
-  handleToggleRating = (movieRank) => {
+  handleToggleRating = (movieId) => {
     const movies = [...this.state.movies];
-    const movie = movies.find((movie) => movie.rank === movieRank);
+    const movie = movies.find((movie) => movie.id === movieId);
     movie.c_rating = !movie.c_rating;
     this.setState({ movies });
   };
 
+  componentDidMount() {
+    const currState = { ...this.state };
+    const movies = getMovies();
+    currState.movies = movies;
+    this.setState(currState);
+  }
+
   render() {
     const columns = [
       {
-        label: "Rank",
-        path: "rank",
+        label: "ID",
+        path: "id",
         content: (movie, key) => <td>{movie[key]}</td>,
       },
       {
@@ -64,9 +36,13 @@ class Movies extends Component {
         content: (movie, key) => <td>{movie[key]}</td>,
       },
       {
-        label: "IMDB Rating",
-        path: "rating",
-        content: (movie, key) => <td>{movie[key]}</td>,
+        label: "Poster",
+        path: "posterUrl",
+        content: (movie, key) => (
+          <td>
+            <img src={movie[key]} style={{ height: "100px", width: "auto" }} />
+          </td>
+        ),
       },
       {
         label: "Your Rating",
@@ -75,7 +51,7 @@ class Movies extends Component {
           <td>
             <Rating
               isRated={movie[key]}
-              rank={movie.rank}
+              id={movie.id}
               handleToggleRating={this.handleToggleRating}
             />
           </td>
@@ -104,4 +80,13 @@ export default Movies;
 /*
  ** columns array টা মুভি table এর কয়টা column আছে সেই info পাস করে
  ** npm i bootstrap-icons
+ **
+ **  / implementing apis call /
+ **
+ ** for api call we call for data in componentDidUpdate
+ ** which is Mountting Phase; [ after constructor(), and render()]
+ ** for a single time render() shows an empty movies object
+ ** then in componentDidUpdate the data is called upon and update the state
+ ** onece state is updated the "Update Phase" starts
+ ** and once angain render() is called and shows movies;
  */

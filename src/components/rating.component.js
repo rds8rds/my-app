@@ -20,12 +20,12 @@ class Rating extends Component {
   handleOut = () => this.setState({ isHovered: false });
 
   render() {
-    const { rank, handleToggleRating } = this.props;
+    const { id, handleToggleRating } = this.props;
     return (
       <i
         onMouseOver={this.handleHover}
         onMouseLeave={this.handleOut}
-        onClick={() => handleToggleRating(rank)}
+        onClick={() => handleToggleRating(id)}
         className={this.getClassName()}
       ></i>
     );

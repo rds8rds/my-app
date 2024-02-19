@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import Table from "./common/table.component";
 import Rating from "./rating.component";
 import getMovies from "../service/get-movies.service";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
-    headers: ["ID", "Title", "IMDB Rating", "Your Rating", "Action"],
     movies: [],
+    sortColumn: { path: "id", order: "asc" },
   };
 
   handleToggleRating = (movieId) => {
@@ -23,21 +24,39 @@ class Movies extends Component {
     this.setState(currState);
   }
 
+  handleSort = (sortColumn) => {
+    this.setState({ ...this.state, sortColumn }); // copy then change only sortColumn
+  };
+
+  sortMovies = (movies) => {
+    const { sortColumn } = this.state;
+    const sortedMovies = _.orderBy(
+      movies,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
+    return sortedMovies;
+  };
+
   render() {
+    const movies = this.sortMovies(this.state.movies);
     const columns = [
       {
         label: "ID",
         path: "id",
+        sorting: true,
         content: (movie, key) => <td>{movie[key]}</td>,
       },
       {
         label: "Title",
         path: "title",
+        sorting: true,
         content: (movie, key) => <td>{movie[key]}</td>,
       },
       {
         label: "Poster",
         path: "posterUrl",
+        sorting: false,
         content: (movie, key) => (
           <td>
             <img src={movie[key]} style={{ height: "100px", width: "auto" }} />
@@ -47,6 +66,7 @@ class Movies extends Component {
       {
         label: "Your Rating",
         path: "c_rating",
+        sorting: false,
         content: (movie, key) => (
           <td>
             <Rating
@@ -60,15 +80,17 @@ class Movies extends Component {
       {
         label: "Action",
         path: "action",
+        sorting: false,
         content: (movie, key) => <td>{movie[key]}</td>,
       },
     ];
     return (
       <>
         <Table
-          headers={this.state.headers}
-          data={this.state.movies}
           columns={columns}
+          items={movies}
+          sortColumn={this.state.sortColumn}
+          sortFunc={this.handleSort}
         />
       </>
     );
@@ -83,10 +105,10 @@ export default Movies;
  **
  **  / implementing apis call /
  **
- ** for api call we call for data in componentDidUpdate
+ ** for api call we call for items in componentDidUpdate
  ** which is Mountting Phase; [ after constructor(), and render()]
  ** for a single time render() shows an empty movies object
- ** then in componentDidUpdate the data is called upon and update the state
+ ** then in componentDidUpdate the items is called upon and update the state
  ** onece state is updated the "Update Phase" starts
  ** and once angain render() is called and shows movies;
  */

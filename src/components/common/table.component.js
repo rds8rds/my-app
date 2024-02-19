@@ -1,12 +1,16 @@
 import TableHeader from "./table-header.component";
 import TableBody from "./table-body.component";
 
-const Table = ({ headers, data, columns }) => {
+const Table = ({ items, columns, sortColumn, sortFunc }) => {
   return (
     <>
       <table className="table table-striped">
-        <TableHeader headers={headers} />
-        <TableBody data={data} columns={columns} />
+        <TableHeader
+          columns={columns}
+          sortFunc={sortFunc}
+          sortColumn={sortColumn}
+        />
+        <TableBody items={items} columns={columns} />
       </table>
     </>
   );

@@ -4,4 +4,4 @@ const getGenres = () => {
   return movieData.genres;
 };
 
-export default getGeneres;
+export default getGenres;

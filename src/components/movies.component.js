@@ -3,11 +3,18 @@ import Table from "./common/table.component";
 import Rating from "./rating.component";
 import getMovies from "../service/get-movies.service";
 import _ from "lodash";
+import Paging from "./common/pagination.component";
+import getGenres from "../service/get-genres.service";
+import Filtering from "./common/filtering.component";
 
 class Movies extends Component {
   state = {
     movies: [],
     sortColumn: { path: "id", order: "asc" },
+    pageLen: 5,
+    currentPage: 2,
+    genres: [],
+    selectedGenre: "All Genres",
   };
 
   handleToggleRating = (movieId) => {
@@ -18,16 +25,31 @@ class Movies extends Component {
   };
 
   componentDidMount() {
-    const currState = { ...this.state };
+    //const currState = { ...this.state };
     const movies = getMovies();
-    currState.movies = movies;
-    this.setState(currState);
+    const genres = ["All Genres", ...getGenres()];
+    //currState.movies = movies;
+    //this.setState(currState);
+    this.setState({ ...this.state, movies, genres });
   }
 
   handleSort = (sortColumn) => {
     this.setState({ ...this.state, sortColumn }); // copy then change only sortColumn
   };
 
+  handlePageChange = (currentPage) => {
+    this.setState({ ...this.state, currentPage });
+  };
+  handleSelectedGenereChange = (selectedGenre) => {
+    this.setState({ ...this.state, selectedGenre });
+  };
+
+  paginatedMovies = (movies) => {
+    const { currentPage, pageLen } = this.state;
+    const start = (currentPage - 1) * pageLen;
+    const paginatedMovies = movies.slice(start, start + pageLen);
+    return paginatedMovies;
+  };
   sortMovies = (movies) => {
     const { sortColumn } = this.state;
     const sortedMovies = _.orderBy(
@@ -38,8 +60,23 @@ class Movies extends Component {
     return sortedMovies;
   };
 
+  filterMovies = () => {
+    const { movies, selectedGenre } = this.state;
+    const filteredMovies = movies.filter((movie) => {
+      if (selectedGenre === "All Genres") return true;
+
+      // যদি selectedGenre genres এর মধ্যেই থাকে তাইলে filteredMovies এ add হয়ে যাবে;
+      if (movie.genres.includes(selectedGenre)) return true;
+      else return false;
+    });
+
+    return filteredMovies;
+  };
+
   render() {
-    const movies = this.sortMovies(this.state.movies);
+    const filteredMovies = this.filterMovies(this.state.movies);
+    const paginatedMovies = this.paginatedMovies(filteredMovies);
+    const movies = this.sortMovies(paginatedMovies);
     const columns = [
       {
         label: "ID",
@@ -86,12 +123,30 @@ class Movies extends Component {
     ];
     return (
       <>
-        <Table
-          columns={columns}
-          items={movies}
-          sortColumn={this.state.sortColumn}
-          sortFunc={this.handleSort}
-        />
+        <div className="container">
+          <div className="row">
+            <Filtering
+              items={this.state.genres}
+              selectedItem={this.state.selectedGenre}
+              handleSelectedItemChange={this.handleSelectedGenereChange}
+            />
+
+            <div className="col-lg-8">
+              <Table
+                columns={columns}
+                items={movies}
+                sortColumn={this.state.sortColumn}
+                sortFunc={this.handleSort}
+              />
+              <Paging
+                movieLen={filteredMovies.length} // এখানে filteredMovies.length যাবে;
+                pageLen={this.state.pageLen}
+                currentPage={this.state.currentPage}
+                handlePageChange={this.handlePageChange}
+              />
+            </div>
+          </div>
+        </div>
       </>
     );
   }
